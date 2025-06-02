@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Cargar Final{% endblock %}
+{% block content %}
+<h2 class="mb-4">Cargar Resultado de la Final</h2>
+<form method="POST">
+    <div class="mb-3">
+        <label class="form-label">Local: {{ final.local }}</label>
+        <input type="number" name="goles_local" class="form-control" placeholder="Goles Local" min="0" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Visitante: {{ final.visitante }}</label>
+        <input type="number" name="goles_visitante" class="form-control" placeholder="Goles Visitante" min="0" required>
+    </div>
+    <button type="submit" class="btn btn-danger">Guardar Final</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Volver</a>
+</form>
+{% endblock %}

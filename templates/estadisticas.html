@@ -1,0 +1,917 @@
+{% extends "base.html" %}
+{% block title %}Estadísticas Detalladas{% endblock %}
+
+{% block head %}
+<style>
+    .stat-card {
+        transition: transform 0.2s;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        min-height: 170px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 24px 0 18px 0;
+    }
+    .stat-card .stat-icon {
+        font-size: 2.6rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    .stat-card .stat-value {
+        font-size: 2.2rem;
+        font-weight: bold;
+        margin-bottom: 0.2rem;
+        line-height: 1.1;
+    }
+    .stat-card .stat-label {
+        color: #fff;
+        font-size: 1.05rem;
+        opacity: 0.95;
+        margin-bottom: 0;
+        font-weight: 500;
+    }
+    .stat-card.bg-success {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+    }
+    .stat-card.bg-primary {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+    }
+    .stat-card.bg-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%) !important;
+    }
+    .stat-card.bg-warning {
+        background: linear-gradient(135deg, #ffc107 0%, #d39e00 100%) !important;
+    }
+    
+    /* Estilos para las nuevas estadísticas */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .mini-stat {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+    
+    .mini-stat-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #007bff;
+    }
+    
+    .mini-stat-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    
+    .team-performance {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+    
+    .performance-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+    
+    .performance-label {
+        color: #6c757d;
+    }
+    
+    .performance-value {
+        font-weight: 600;
+    }
+    
+    /* Nuevos estilos para gráficos */
+    .chart-container {
+        position: relative;
+        margin: auto;
+        height: 300px;
+        margin-bottom: 2rem;
+    }
+    
+    .stats-section {
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .stats-section h5 {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #eee;
+    }
+    
+    .comparison-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+    
+    .comparison-item {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .comparison-value {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #007bff;
+    }
+    
+    .comparison-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-top: 0.5rem;
+    }
+    
+    .team-stats {
+        transition: transform 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .team-stats:hover {
+        transform: translateY(-5px);
+    }
+    
+    .performance-indicator {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+    
+    .performance-indicator.positive {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .performance-indicator.neutral {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .performance-indicator.negative {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Estadísticas Detalladas</h2>
+
+    <!-- Tarjetas de resumen -->
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="card stat-card bg-primary text-white">
+                <span class="stat-icon"><i class="bi bi-trophy"></i></span>
+                <span class="stat-value">{{ tabla[0].Equipo }}</span>
+                <span class="stat-label">Líder del Torneo</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-success text-white">
+                <span class="stat-icon"><i class="bi bi-ball"></i></span>
+                <span class="stat-value">{{ goleadores[0].goles }}</span>
+                <span class="stat-label">
+                    Máximo Goleador:
+                    {{ goleadores[0].nombre }}
+                    {% if goleadores|length > 1 and goleadores[0].goles == goleadores[1].goles %}
+                        (+1)
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-info text-white">
+                <span class="stat-icon"><i class="bi bi-graph-up"></i></span>
+                <span class="stat-value">{{ total_goles }}</span>
+                <span class="stat-label">Total de Goles</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-warning text-white">
+                <span class="stat-icon"><i class="bi bi-calendar-check"></i></span>
+                <span class="stat-value">{{ partidos_jugados }}</span>
+                <span class="stat-label">Partidos Jugados</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nuevas estadísticas generales -->
+    <div class="stats-section">
+        <h5>Resumen del Torneo</h5>
+        <div class="stats-grid mb-5">
+            <div class="mini-stat">
+                <div class="mini-stat-value">
+                    {% if partidos_jugados > 0 %}
+                        {{ (total_goles / partidos_jugados)|round(2) }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </div>
+                <div class="mini-stat-label">Promedio de Goles por Partido</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-value">{{ tabla|selectattr('PG', '>', 0)|list|length }}</div>
+                <div class="mini-stat-label">Equipos con Victoria</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-value">{{ tabla|selectattr('PE', '>', 0)|list|length }}</div>
+                <div class="mini-stat-label">Equipos con Empate</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-value">{{ tabla|selectattr('PP', '>', 0)|list|length }}</div>
+                <div class="mini-stat-label">Equipos con Derrota</div>
+            </div>
+        </div>
+        
+        <!-- Nuevas estadísticas avanzadas -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="stats-section">
+                    <h5>Equipo más Efectivo</h5>
+                    {% if tabla and tabla[0] %}
+                    <div class="d-flex align-items-center">
+                        <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(tabla[0].Equipo)) }}" 
+                             style="height:40px; margin-right:10px;">
+                        <div>
+                            <h6 class="mb-1">{{ tabla[0].Equipo }}</h6>
+                            <p class="mb-0">
+                                Efectividad: 
+                                {% if tabla[0].PJ > 0 %}
+                                    {{ (tabla[0].PTS / (tabla[0].PJ * 3) * 100)|round(1) }}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No hay datos disponibles</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="stats-section">
+                    <h5>Mejor Ataque</h5>
+                    {% set mejor_ataque = tabla|sort(attribute='GF')|last if tabla else None %}
+                    {% if mejor_ataque %}
+                    <div class="d-flex align-items-center">
+                        <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(mejor_ataque.Equipo)) }}" 
+                             style="height:40px; margin-right:10px;">
+                        <div>
+                            <h6 class="mb-1">{{ mejor_ataque.Equipo }}</h6>
+                            <p class="mb-0">
+                                {{ mejor_ataque.GF }} goles
+                                {% if mejor_ataque.PJ > 0 %}
+                                    ({{ (mejor_ataque.GF / mejor_ataque.PJ)|round(2) }} por partido)
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No hay datos disponibles</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas de goleadores -->
+        <div class="stats-section mt-5">
+            <h5>Tabla de Goleadores</h5>
+            {% if goleadores %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Jugador</th>
+                            <th>Equipo</th>
+                            <th>Goles</th>
+                            <th>Promedio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for goleador in goleadores[:5] %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ goleador.nombre }}</td>
+                            <td>
+                                <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(goleador.equipo)) }}" 
+                                     style="height:20px; margin-right:5px;">
+                                {{ goleador.equipo }}
+                            </td>
+                            <td>{{ goleador.goles }}</td>
+                            <td>
+                                {% if partidos_jugados > 0 %}
+                                    {{ (goleador.goles / partidos_jugados)|round(2) }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No hay datos de goleadores disponibles</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Estadísticas avanzadas: rachas, defensa y más goleado -->
+    <div class="stats-section mt-5">
+        <h5>Rachas y Defensas</h5>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Mejor Racha de Victorias</div>
+                    <div class="mini-stat-value">{{ mejor_racha.nombre }} ({{ mejor_racha.valor }}V)</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Mejor Defensa</div>
+                    <div class="mini-stat-value">{{ mejor_defensa.nombre }} ({{ mejor_defensa.valor }} GC)</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Equipo más Goleado</div>
+                    <div class="mini-stat-value">{{ mas_goleado.nombre }} ({{ mas_goleado.valor }} GC)</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Vallas Invictas</div>
+                    <div class="mini-stat-value">{{ vallas_invictas | dictsort('value', reverse=True) | first | default({'key': '-', 'value': 0}) | attr('key') }} ({{ vallas_invictas | dictsort('value', reverse=True) | first | default({'key': '-', 'value': 0}) | attr('value') }})</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas por equipo con tarjetas desplegables -->
+    <div class="row">
+        {% for equipo in tabla %}
+        <div class="col-md-6 mb-4">
+            <div class="team-stats card shadow-sm border-0" style="border-radius: 12px;">
+                <div class="d-flex align-items-center justify-content-between p-3">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(equipo.Equipo)) }}" style="height:40px; margin-right:10px;">
+                        <div>
+                            <h5 class="mb-0">{{ equipo.Equipo }}</h5>
+                            <div class="text-muted" style="font-size:1.1rem; font-weight:600;">{{ equipo.PTS }} pts</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm toggle-detalle" type="button" data-bs-toggle="collapse" data-bs-target="#detalle-{{ loop.index }}" aria-expanded="false" aria-controls="detalle-{{ loop.index }}">
+                        <span class="ver-mas">Ver más</span>
+                        <span class="ver-menos d-none">Ver menos</span>
+                    </button>
+                </div>
+                <div class="px-3 pb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-info text-dark">Efectividad: {{ (equipo.PTS / (equipo.PJ * 3) * 100)|round(1) if equipo.PJ > 0 else 0 }}%</span>
+                        <span class="badge bg-success">Racha: 
+                            {% if equipo.PG > 0 %}{{ equipo.PG }}V{% elif equipo.PE > 0 %}{{ equipo.PE }}E{% else %}{{ equipo.PP }}D{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="collapse" id="detalle-{{ loop.index }}">
+                    <div class="px-3 pb-3">
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <p><strong>Partidos:</strong> {{ equipo.PJ }}</p>
+                                <p><strong>Goles a favor:</strong> {{ equipo.GF }}</p>
+                                <p><strong>Victorias:</strong> {{ equipo.PG }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>Empates:</strong> {{ equipo.PE }}</p>
+                                <p><strong>Derrotas:</strong> {{ equipo.PP }}</p>
+                                <p><strong>Vallas Invictas:</strong> {{ vallas_invictas.get(equipo.Equipo, 0) }}</p>
+                                <p><strong>Promedio de Goles:</strong> {{ (equipo.GF / equipo.PJ)|round(2) if equipo.PJ > 0 else 0 }}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h6>Goleadores del equipo:</h6>
+                            <ul class="list-unstyled">
+                                {% for goleador in goleadores_equipo[equipo.Equipo] %}
+                                <li class="d-flex justify-content-between align-items-center mb-1">
+                                    <span>{{ goleador.nombre }}</span>
+                                    <span class="badge bg-primary rounded-pill">{{ goleador.goles }} goles</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Gráficos de estadísticas -->
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="stats-section">
+                <h5>Goles por Fecha</h5>
+                <div class="chart-container">
+                    <canvas id="golesPorFecha"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stats-section">
+                <h5>Comparativa de Equipos</h5>
+                <div class="chart-container">
+                    <canvas id="comparativaEquiposRadar"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico de evolución de posiciones -->
+    <div class="stats-section mt-5">
+        <h5>Evolución de Posiciones</h5>
+        <div class="chart-container">
+            <canvas id="evolucionPosiciones"></canvas>
+        </div>
+    </div>
+
+    <!-- Historial de partidos -->
+    <div class="stats-section mt-5">
+        <h5>Historial de Partidos</h5>
+        <form class="row g-3 mb-3" id="filtros-historial">
+            <div class="col-md-4">
+                <label for="filtroEquipo" class="form-label">Equipo</label>
+                <select class="form-select" id="filtroEquipo">
+                    <option value="">Todos</option>
+                    {% for equipo in tabla %}
+                        <option value="{{ equipo.Equipo }}">{{ equipo.Equipo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="filtroFecha" class="form-label">Fecha</label>
+                <select class="form-select" id="filtroFecha">
+                    <option value="">Todas</option>
+                    {% for i in range(1, fechas|length + 1) %}
+                        <option value="{{ i }}">Fecha {{ i }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-striped" id="tablaHistorial">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Local</th>
+                        <th></th>
+                        <th>Goles</th>
+                        <th></th>
+                        <th>Visitante</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for partido in partidos %}
+                    <tr data-equipo="{{ partido.local }} {{ partido.visitante }}" data-fecha="{{ partido.fecha }}">
+                        <td>Fecha {{ partido.fecha }}</td>
+                        <td>
+                            <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(partido.local)) }}" style="height:20px; margin-right:5px;">
+                            {{ partido.local }}
+                        </td>
+                        <td class="text-end">{{ partido.goles_local }}</td>
+                        <td class="text-center">-</td>
+                        <td class="text-start">{{ partido.goles_visitante }}</td>
+                        <td>
+                            <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(partido.visitante)) }}" style="height:20px; margin-right:5px;">
+                            {{ partido.visitante }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Comparativa entre dos equipos -->
+    <div class="stats-section mt-5">
+        <h5>Comparativa entre dos equipos</h5>
+        <form class="row g-3 mb-3" id="formComparativa">
+            <div class="col-md-5">
+                <select class="form-select" id="equipoA">
+                    {% for equipo in equipos %}
+                        <option value="{{ equipo }}">{{ equipo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
+                <span class="fw-bold">vs</span>
+            </div>
+            <div class="col-md-5">
+                <select class="form-select" id="equipoB">
+                    {% for equipo in equipos %}
+                        <option value="{{ equipo }}" {% if loop.index == 2 %}selected{% endif %}>{{ equipo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+        <div id="comparativaManualEquipos" class="row">
+            <!-- Aquí se cargará la comparativa -->
+             <div class="col-12 text-center text-info">Selecciona dos equipos diferentes para comparar.</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --- Historial de partidos con filtros ---
+    const filtroEquipo = document.getElementById('filtroEquipo');
+    const filtroFecha = document.getElementById('filtroFecha');
+    const filasHistorial = document.querySelectorAll('#tablaHistorial tbody tr');
+
+    function filtrarHistorial() {
+        const equipo = filtroEquipo.value;
+        const fecha = filtroFecha.value;
+        filasHistorial.forEach(row => {
+            const equiposData = row.getAttribute('data-equipo');
+            const fechaData = row.getAttribute('data-fecha');
+            let mostrar = true;
+            if (equipo && !equiposData.includes(equipo)) mostrar = false;
+            if (fecha && fechaData !== fecha) mostrar = false;
+            row.style.display = mostrar ? '' : 'none';
+        });
+    }
+    if (filtroEquipo && filtroFecha) {
+        filtroEquipo.addEventListener('change', filtrarHistorial);
+        filtroFecha.addEventListener('change', filtrarHistorial);
+    }
+
+
+    // --- Gráfico de goles por fecha ---
+    const ctxGoles = document.getElementById('golesPorFecha');
+    if (ctxGoles) {
+        new Chart(ctxGoles.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: {{ fechas|tojson }},
+                datasets: [{
+                    label: 'Goles por fecha',
+                    data: {{ goles_por_fecha|tojson }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+
+    // --- Gráfico de comparativa de equipos (Radar) ---
+    const ctxComparativaRadar = document.getElementById('comparativaEquiposRadar');
+    if (ctxComparativaRadar) {
+        const equiposRadar = {{ equipos|tojson }};
+        const tablaRadar = {{ tabla|tojson }};
+        
+        // Mapeo de equipos a colores
+        const teamColors = {
+            'ESTUDIANTES EL COLLA': '#28A745', // Verde
+            'INDEPENDIENTE': '#ADD8E6', // Celeste
+            'REFORMERS': '#DC3545', // Rojo
+            'PEÑAROL': '#000000', // Negro
+            'EL PARQUE': '#FFC107', // Amarillo
+            'ROSARIO ATLETICO': '#007BFF' // Azul
+        };
+
+        const datasetsRadar = equiposRadar.map((equipo, idx) => {
+            const stats = tablaRadar.find(t => t.Equipo === equipo) || {};
+            const efectividad = stats.PJ > 0 ? (stats.PTS / (stats.PJ * 3) * 15) : 0; // Normalizada a escala 0-15
+            const color = teamColors[equipo] || '#6C757D'; // Color por defecto si no se encuentra
+            return {
+                label: equipo,
+                data: [
+                    stats.PTS ?? 0,
+                    stats.GF ?? 0,
+                    stats.PG ?? 0,
+                    efectividad
+                ],
+                backgroundColor: `${color.replace('rgb(', 'rgba(').replace(')', ', 0.2)')}`,
+                borderColor: color,
+                borderWidth: 2,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#000',
+                pointHoverRadius: 6
+            };
+        });
+
+        new Chart(ctxComparativaRadar.getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['Puntos', 'Goles a Favor', 'Victorias', 'Efectividad'],
+                datasets: datasetsRadar
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 11 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) {
+                                     if (context.dataIndex === 3) { // Efectividad
+                                         // Convertir el valor normalizado de vuelta a porcentaje para el tooltip
+                                         label += ((context.parsed.y / 15) * 100).toFixed(1) + '%';
+                                     } else {
+                                         label += context.parsed.y;
+                                     }
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 15, // Escala máxima ajustada a 15
+                        ticks: { stepSize: 3, precision: 0 },
+                         pointLabels: { font: { size: 12, weight: 'bold' } }
+                    }
+                }
+            }
+        });
+    }
+
+    // --- Gráfico de evolución de posiciones ---
+    const ctxEvolucion = document.getElementById('evolucionPosiciones');
+    if (ctxEvolucion) {
+        const equiposEvolucion = {{ equipos|tojson }};
+        const posicionesPorFecha = {{ posiciones_por_fecha|tojson }};
+        const fechasEvolucion = {{ fechas|tojson }};
+        
+        // Mapeo de equipos a colores (reutilizado del gráfico de radar)
+        const teamColors = {
+            'ESTUDIANTES EL COLLA': '#28A745', // Verde
+            'INDEPENDIENTE': '#ADD8E6', // Celeste
+            'REFORMERS': '#DC3545', // Rojo
+            'PEÑAROL': '#000000', // Negro
+            'EL PARQUE': '#FFC107', // Amarillo
+            'ROSARIO ATLETICO': '#007BFF' // Azul
+        };
+        
+        const datasetsEvolucion = equiposEvolucion.map((equipo) => ({
+            label: equipo,
+            data: posicionesPorFecha[equipo],
+            borderColor: teamColors[equipo] || '#6C757D', // Color por defecto si no se encuentra
+            backgroundColor: teamColors[equipo] || '#6C757D', // Color por defecto si no se encuentra
+            fill: false,
+            tension: 0.2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            borderWidth: 2
+        }));
+        new Chart(ctxEvolucion.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: fechasEvolucion,
+                datasets: datasetsEvolucion
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 12 } } },
+                    tooltip: { callbacks: { label: function(context) { return `${context.dataset.label}: Puesto ${context.parsed.y}`; } } }
+                },
+                scales: {
+                    y: {
+                        reverse: true,
+                        min: 1,
+                        max: equiposEvolucion.length,
+                        stepSize: 1,
+                        title: { display: true, text: 'Posición' },
+                        ticks: { callback: function(value) { return `#${value}`; }, precision: 0 }
+                    },
+                    x: { title: { display: true, text: 'Fecha' } }
+                }
+            }
+        });
+    }
+
+    // --- Comparativa entre dos equipos (Manual) ---
+    // Obtener referencias a los elementos solo si existen
+    const equipoA = document.getElementById('equipoA');
+    const equipoB = document.getElementById('equipoB');
+    const comparativaDiv = document.getElementById('comparativaManualEquipos');
+
+    // Solo proceder si todos los elementos necesarios existen
+    if (equipoA && equipoB && comparativaDiv) {
+        const tablaComparativa = {{ tabla|tojson }};
+        const partidosComparativa = {{ partidos|tojson }};
+        const equiposDisponiblesComparativa = {{ equipos|tojson }};
+        const vallasInvictasData = {{ vallas_invictas|tojson }};
+
+        console.log("Selectores y contenedor de comparativa encontrados."); // Debug
+
+        function getStatsComparativa(equipo) {
+            return tablaComparativa.find(t => t.Equipo === equipo) || null;
+        }
+        function enfrentamientosComparativa(a, b) {
+            return partidosComparativa.filter(p =>
+                (p.local === a && p.visitante === b) || (p.local === b && p.visitante === a)
+            );
+        }
+
+        function renderComparativa() {
+            const a = equipoA.value;
+            const b = equipoB.value;
+
+            console.log(`[COMPARATIVA] Comparando ${a} vs ${b}`); // Debug
+
+            if (!a || !b || a === b) {
+                 comparativaDiv.innerHTML = '<div class="col-12 text-center text-info">Selecciona dos equipos diferentes para comparar.</div>';
+                 console.log("[COMPARATIVA] Mensaje: Seleccionar dos equipos diferentes."); // Debug
+                 console.log("[COMPARATIVA] comparativaDiv offsetWidth:", comparativaDiv.offsetWidth, "offsetHeight:", comparativaDiv.offsetHeight); // Debug
+                 return;
+             }
+
+            const statsA = getStatsComparativa(a);
+            const statsB = getStatsComparativa(b);
+            const vallasA = vallasInvictasData[a] || 0;
+            const vallasB = vallasInvictasData[b] || 0;
+            const enf = enfrentamientosComparativa(a, b);
+
+            console.log("[COMPARATIVA] Stats A:", statsA); // Debug
+            console.log("[COMPARATIVA] Stats B:", statsB); // Debug
+            console.log("[COMPARATIVA] Enfrentamientos:", enf); // Debug
+
+            if (!statsA || !statsB) {
+                 comparativaDiv.innerHTML = '<div class="col-12 text-center text-danger">Error al cargar estadísticas de uno o ambos equipos.</div>';
+                 console.log("[COMPARATIVA] Mensaje: Error al cargar estadísticas."); // Debug
+                 console.log("[COMPARATIVA] comparativaDiv offsetWidth:", comparativaDiv.offsetWidth, "offsetHeight:", comparativaDiv.offsetHeight); // Debug
+                 return;
+            }
+
+            let victoriasA = 0, victoriasB = 0, empates = 0;
+            enf.forEach(p => {
+                const golesLocal = parseInt(p.goles_local);
+                const golesVisitante = parseInt(p.goles_visitante);
+
+                if (isNaN(golesLocal) || isNaN(golesVisitante)) return;
+
+                if (golesLocal === golesVisitante) {
+                     empates++;
+                 } else if (p.local === a && golesLocal > golesVisitante) {
+                     victoriasA++;
+                 } else if (p.visitante === a && golesVisitante > golesLocal) {
+                     victoriasA++;
+                 } else if (p.local === b && golesLocal > golesVisitante) {
+                     victoriasB++;
+                 } else if (p.visitante === b && golesVisitante > golesLocal) {
+                     victoriasB++;
+                 }
+            });
+
+            // Función auxiliar para resaltar el valor mayor (o menor para derrotas)
+            function resaltar(valorA, valorB, esMejorMayor = true) {
+                if (valorA === undefined || valorB === undefined) return { valA: valorA ?? '-', valB: valorB ?? '-' };
+                if (esMejorMayor) {
+                    if (valorA > valorB) return { valA: `<strong>${valorA}</strong>`, valB: valorB };
+                    if (valorB > valorA) return { valA: valorA, valB: `<strong>${valorB}</strong>` };
+                } else { // Menor es mejor (para derrotas)
+                    if (valorA < valorB) return { valA: `<strong>${valorA}</strong>`, valB: valorB };
+                    if (valorB < valorA) return { valA: valorA, valB: `<strong>${valorB}</strong>` };
+                }
+                return { valA: valorA, valB: valorB }; // Empate o valores iguales
+            }
+
+            const puntosResaltados = resaltar(statsA.PTS, statsB.PTS);
+            const gfResaltados = resaltar(statsA.GF, statsB.GF);
+            const pgResaltados = resaltar(statsA.PG, statsB.PG);
+            const ppResaltados = resaltar(statsA.PP, statsB.PP, false); // Menor es mejor para derrotas
+            const efectividadA = statsA.PJ > 0 ? ((statsA.PTS / (statsA.PJ * 3)) * 100) : 0;
+            const efectividadB = statsB.PJ > 0 ? ((statsB.PTS / (statsB.PJ * 3)) * 100) : 0;
+            const efectividadResaltada = resaltar(efectividadA.toFixed(1), efectividadB.toFixed(1));
+            const victoriasDirectasResaltadas = resaltar(victoriasA, victoriasB);
+            const vallasResaltadas = resaltar(vallasA, vallasB);
+
+            const comparativaHTML = `
+            <div class="col-md-6">
+                <div class="card p-3 mb-2 h-100">
+                    <h6 class="fw-bold mb-2">${a}</h6>
+                    <p><strong>Puntos:</strong> ${puntosResaltados.valA}</p>
+                    <p><strong>Goles a favor:</strong> ${gfResaltados.valA}</p>
+                    <p><strong>Victorias en torneo:</strong> ${pgResaltados.valA}</p>
+                    <p><strong>Empates en torneo:</strong> ${statsA.PE ?? '-'}</p>
+                    <p><strong>Derrotas en torneo:</strong> ${ppResaltados.valA}</p>
+                    <p><strong>Efectividad en torneo:</strong> ${efectividadResaltada.valA}%</p>
+                    <p><strong>Victorias directas vs ${b}:</strong> ${victoriasDirectasResaltadas.valA}</p>
+                    <p><strong>Vallas Invictas:</strong> ${vallasResaltadas.valA}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-3 mb-2 h-100">
+                    <h6 class="fw-bold mb-2">${b}</h6>
+                    <p><strong>Puntos:</strong> ${puntosResaltados.valB}</p>
+                    <p><strong>Goles a favor:</strong> ${gfResaltados.valB}</p>
+                    <p><strong>Victorias en torneo:</strong> ${pgResaltados.valB}</p>
+                    <p><strong>Empates en torneo:</strong> ${statsB.PE ?? '-'}</p>
+                    <p><strong>Derrotas en torneo:</strong> ${ppResaltados.valB}</p>
+                    <p><strong>Efectividad en torneo:</strong> ${efectividadResaltada.valB}%</p>
+                    <p><strong>Victorias directas vs ${a}:</strong> ${victoriasDirectasResaltadas.valB}</p>
+                    <p><strong>Vallas Invictas:</strong> ${vallasResaltadas.valB}</p>
+                </div>
+            </div>
+            <div class="col-12 text-center mt-2">
+                <span class="badge bg-secondary">Empates directos: ${empates}</span>
+            </div>
+            `;
+            console.log("[COMPARATIVA] HTML generado:", comparativaHTML); // Debug
+            console.log("[COMPARATIVA] Antes de asignar innerHTML. comparativaDiv:", comparativaDiv); // Debug
+            console.log("[COMPARATIVA] comparativaDiv offsetWidth:", comparativaDiv.offsetWidth, "offsetHeight:", comparativaDiv.offsetHeight); // Debug
+
+            comparativaDiv.innerHTML = comparativaHTML;
+
+            console.log("[COMPARATIVA] Después de asignar innerHTML. comparativaDiv innerHTML (parte):", comparativaDiv.innerHTML.substring(0, 200) + "..."); // Debug
+            console.log("[COMPARATIVA] comparativaDiv offsetWidth después:", comparativaDiv.offsetWidth, "offsetHeight después:", comparativaDiv.offsetHeight); // Debug
+        }
+
+        // Añadir listeners a los selectores
+        console.log("Selectores encontrados, añadiendo listeners."); // Debug
+        equipoA.addEventListener('change', renderComparativa);
+        equipoB.addEventListener('change', renderComparativa);
+
+        // Disparar la comparativa al cargar la página si hay al menos 2 equipos
+        // Esperar un poco para asegurar que el DOM esté completamente listo
+         setTimeout(() => {
+            if (equiposDisponiblesComparativa.length >= 1) { // Cambiado a length >= 1 para evitar error si solo hay 1 equipo
+                 // Seleccionar equipos diferentes por defecto si es posible
+                 if (equipoA.value === equipoB.value && equiposDisponiblesComparativa.length > 1) {
+                     equipoB.value = equiposDisponiblesComparativa.find(eq => eq !== equipoA.value) || equiposDisponiblesComparativa[1];
+                 } else if (equiposDisponiblesComparativa.length === 1) {
+                      // Si solo hay un equipo, mostrar mensaje
+                     comparativaDiv.innerHTML = '<div class="col-12 text-center text-info">Se necesitan al menos dos equipos para mostrar la comparativa.</div>';
+                     console.log("[COMPARATIVA] Solo hay un equipo disponible."); // Debug
+                     return;
+                 }
+                 console.log("[COMPARATIVA] Disparando comparativa inicial."); // Debug
+                 renderComparativa(); // Llamar directamente ya que está en el mismo scope
+            } else {
+                 comparativaDiv.innerHTML = '<div class="col-12 text-center text-info">Se necesitan al menos dos equipos para mostrar la comparativa.</div>';
+                 console.log("[COMPARATIVA] No hay suficientes equipos disponibles."); // Debug
+                 console.log("[COMPARATIVA] comparativaDiv offsetWidth:", comparativaDiv.offsetWidth, "offsetHeight:", comparativaDiv.offsetHeight); // Debug
+            }
+         }, 300); // Aumentado el retraso a 300ms para mayor seguridad
+    } else {
+        console.error("Error: No se encontraron uno o más elementos necesarios para la comparativa.", { equipoA, equipoB, comparativaDiv }); // Debug
+        // Intenta mostrar un mensaje de error en el body si el contenedor principal no se encuentra
+        const body = document.querySelector('body');
+        if(body) {
+             body.innerHTML += '<div class="container mt-4"><div class="alert alert-danger">Error interno: No se pudo iniciar la sección de comparativa.</div></div>';
+        }
+    }
+});
+</script>
+{% endblock %} 

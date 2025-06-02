@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<h2 class="mb-4">Tabla de Posiciones</h2>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Equipo</th>
+            <th>PJ</th>
+            <th>PG</th>
+            <th>PE</th>
+            <th>PP</th>
+            <th>GF</th>
+            <th>GC</th>
+            <th>DG</th>
+            <th>PTS</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for equipo in tabla %}
+        <tr>
+            <td>
+                <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(equipo.Equipo)) }}"
+                     alt="Escudo {{ equipo.Equipo }}" style="height:28px;vertical-align:middle;margin-right:6px;">
+                {{ equipo.Equipo }}
+            </td>
+            <td>{{ equipo.PJ }}</td>
+            <td>{{ equipo.PG }}</td>
+            <td>{{ equipo.PE }}</td>
+            <td>{{ equipo.PP }}</td>
+            <td>{{ equipo.GF }}</td>
+            <td>{{ equipo.GC }}</td>
+            <td>{{ equipo.DG }}</td>
+            <td><b>{{ equipo.PTS }}</b></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if probable_semifinal %}
+<div class="mt-4">
+    <h3 class="mb-3 text-info"><i class="bi bi-trophy"></i> Probable Semifinal</h3>
+    <div class="row">
+        {% for s in probable_semifinal %}
+        <div class="col-md-6 mb-3">
+            <div class="card border-info shadow-sm h-100">
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(s.local)) }}" style="height:32px;margin-right:8px;">
+                    <b>{{ s.local }}</b>
+                    <span class="mx-2 text-info" style="font-size:1.2em;">vs</span>
+                    <b>{{ s.visitante }}</b>
+                    <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(s.visitante)) }}" style="height:32px;margin-left:8px;">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-muted small mt-2">* La semifinal se confirmará al finalizar la fecha 5.</div>
+</div>
+{% endif %}
+
+{% if proxima_fecha %}
+<h2 class="mt-5 mb-4">Próxima Fecha {{ proxima_fecha }}</h2>
+<div class="row">
+    {% for p in partidos_proxima_fecha %}
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100 border-primary" style="border-width:2px;">
+            <div class="card-header text-center" style="background:#007bff;color:white;font-weight:bold;">
+                Fecha {{ proxima_fecha }}
+            </div>
+            <div class="card-body text-center d-flex align-items-center justify-content-center">
+                <div class="d-flex align-items-center">
+                    <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(p.local)) }}" alt="Escudo {{ p.local }}" style="height:38px;margin-right:10px;">
+                    <span style="font-weight:bold; font-size:1.1em;">{{ p.local }}</span>
+                </div>
+                <span class="mx-3" style="font-size:1.2em; font-weight:bold;">vs</span>
+                <div class="d-flex align-items-center">
+                    <span style="font-weight:bold; font-size:1.1em;">{{ p.visitante }}</span>
+                    <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(p.visitante)) }}" alt="Escudo {{ p.visitante }}" style="height:38px;margin-left:10px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if semifinales %}
+    <h2 class="mt-5 mb-4">Semifinales <i class="bi bi-trophy text-info"></i></h2>
+    <div class="row">
+        {% for sf in semifinales %}
+        <div class="col-md-6 mb-3">
+            <div class="card border-info shadow-sm h-100">
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(sf.local)) }}" style="height:32px;margin-right:8px;">
+                    <b>{{ sf.local }}</b>
+                    <span class="mx-2 text-info" style="font-size:1.2em;">vs</span>
+                    <b>{{ sf.visitante }}</b>
+                    <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(sf.visitante)) }}" style="height:32px;margin-left:8px;">
+                    <div class="mt-2">
+                        <span class="badge bg-info" style="font-size:1.1em;">
+                            {{ sf.goles_local if sf.goles_local is not none else '-' }} : {{ sf.goles_visitante if sf.goles_visitante is not none else '-' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if session.get("logueado") %}
+        <a href="{{ url_for('ingresar_semifinal') }}" class="btn btn-warning mb-4">Cargar Semifinales</a>
+    {% endif %}
+{% endif %}
+
+{% if final %}
+    <h2 class="mt-5 mb-4">Final <i class="bi bi-trophy-fill text-danger"></i></h2>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card border-danger shadow-sm h-100">
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(final[0].local)) }}" style="height:32px;margin-right:8px;">
+                    <b>{{ final[0].local }}</b>
+                    <span class="mx-2 text-danger" style="font-size:1.2em;">vs</span>
+                    <b>{{ final[0].visitante }}</b>
+                    <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(final[0].visitante)) }}" style="height:32px;margin-left:8px;">
+                    <div class="mt-2">
+                        <span class="badge bg-danger" style="font-size:1.1em;">
+                            {{ final[0].goles_local if final[0].goles_local is not none else '-' }} : {{ final[0].goles_visitante if final[0].goles_visitante is not none else '-' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if session.get("logueado") %}
+        <a href="{{ url_for('ingresar_final') }}" class="btn btn-danger mb-4">Cargar Final</a>
+    {% endif %}
+{% endif %}
+
+<h2 class="mt-5 mb-4">Partidos Jugados</h2>
+<div class="row">
+    {% for p in partidos %}
+        {% if loop.index0 % 3 == 0 and not loop.first %}
+            </div><div class="row mt-3">
+        {% endif %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 border-info" style="border-width:2px;">
+                <div class="card-header text-center" style="background:#00bcd4;color:white;font-weight:bold;">
+                    Fecha {{ p.fecha }}
+                </div>
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(p.local)) }}" alt="Escudo {{ p.local }}" style="height:38px;">
+                        <span style="font-weight:bold;">{{ p.local }}</span>
+                        <span class="badge rounded-pill bg-info" style="font-size:1.2em;">{{ p.goles_local }} : {{ p.goles_visitante }}</span>
+                        <span style="font-weight:bold;">{{ p.visitante }}</span>
+                        <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(p.visitante)) }}" alt="Escudo {{ p.visitante }}" style="height:38px;">
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6 text-start">
+                            {% for g in p.goleadores if g.equipo == p.local %}
+                                <div style="font-size:0.95em;">{{ g.nombre }} <span class="text-muted">{{ g.cantidad }} gol{{ 'es' if g.cantidad|int > 1 else '' }}</span></div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-6 text-end">
+                            {% for g in p.goleadores if g.equipo == p.visitante %}
+                                <div style="font-size:0.95em;">{{ g.nombre }} <span class="text-muted">{{ g.cantidad }} gol{{ 'es' if g.cantidad|int > 1 else '' }}</span></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<h2 class="mt-5 mb-4">Tabla de Goleadores</h2>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Jugador</th>
+            <th>Equipo</th>
+            <th>Goles</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for g in goleadores %}
+        <tr>
+            <td>{{ g.nombre }}</td>
+            <td>
+                <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(g.equipo)) }}"
+                     alt="Escudo {{ g.equipo }}" style="height:25px;vertical-align:middle;margin-right:8px;">
+                {{ g.equipo }}
+            </td>
+            <td><b>{{ g.goles }}</b></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="mt-5">
+    {% if session.get("logueado") %}
+        <a href="{{ url_for('ingresar_resultado') }}" class="btn btn-info">Ingresar Resultado</a>
+    {% endif %}
+</div>
+{% endblock %}

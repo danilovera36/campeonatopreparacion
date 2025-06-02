@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="mb-4">Iniciar Sesión</h2>
+        {% if error %}
+        <div class="alert alert-danger mb-3">{{ error }}</div>
+        {% endif %}
+        <form method="POST">
+            <div class="mb-3">
+                <label for="usuario" class="form-label">Usuario:</label>
+                <input type="text" name="usuario" id="usuario" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="contrasena" class="form-label">Contraseña:</label>
+                <input type="password" name="contrasena" id="contrasena" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-info">Iniciar Sesión</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

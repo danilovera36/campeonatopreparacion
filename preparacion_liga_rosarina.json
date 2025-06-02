@@ -1,0 +1,164 @@
+{
+    "tabla_posiciones": [
+      {"Equipo": "ESTUDIANTES EL COLLA", "PJ": 0, "PG": 0, "PE": 0, "PP": 0, "GF": 0, "GC": 0, "DG": 0, "PTS": 0},
+      {"Equipo": "ROSARIO ATLETICO", "PJ": 0, "PG": 0, "PE": 0, "PP": 0, "GF": 0, "GC": 0, "DG": 0, "PTS": 0},
+      {"Equipo": "EL PARQUE", "PJ": 0, "PG": 0, "PE": 0, "PP": 0, "GF": 0, "GC": 0, "DG": 0, "PTS": 0},
+      {"Equipo": "PEÑAROL", "PJ": 0, "PG": 0, "PE": 0, "PP": 0, "GF": 0, "GC": 0, "DG": 0, "PTS": 0},
+      {"Equipo": "REFORMERS", "PJ": 0, "PG": 0, "PE": 0, "PP": 0, "GF": 0, "GC": 0, "DG": 0, "PTS": 0},
+      {"Equipo": "INDEPENDIENTE", "PJ": 0, "PG": 0, "PE": 0, "PP": 0, "GF": 0, "GC": 0, "DG": 0, "PTS": 0}
+    ],
+    "partidos_jugados": [
+      {
+        "fecha": 1,
+        "local": "PEÑAROL",
+        "visitante": "REFORMERS",
+        "goles_local": 3,
+        "goles_visitante": 0,
+        "goleadores": [
+          {"nombre": "Dominguez Moreira, Johnatan Eduardo", "equipo": "PEÑAROL", "cantidad": 1},
+          {"nombre": "Batista Gaucie, Facundo", "equipo": "PEÑAROL", "cantidad": 2}
+        ]
+      },
+      {
+        "fecha": 1,
+        "local": "INDEPENDIENTE",
+        "visitante": "ROSARIO ATLETICO",
+        "goles_local": 1,
+        "goles_visitante": 1,
+        "goleadores": [
+          {"nombre": "Herrera Moreira, Brandon Maximiliano", "equipo": "INDEPENDIENTE", "cantidad": 1},
+          {"nombre": "Corbalan Casco, Antony Federico", "equipo": "ROSARIO ATLETICO", "cantidad": 1}
+        ]
+      },
+      {
+        "fecha": 1,
+        "local": "EL PARQUE",
+        "visitante": "ESTUDIANTES EL COLLA",
+        "goles_local": 1,
+        "goles_visitante": 3,
+        "goleadores": [
+          {"nombre": "Carmona Alfonso, Juan Pablo", "equipo": "EL PARQUE", "cantidad": 1},
+          {"nombre": "Burgo Castañose, Brian", "equipo": "ESTUDIANTES EL COLLA", "cantidad": 1},
+          {"nombre": "Otero Bentancour, Brian Ezequiel", "equipo": "ESTUDIANTES EL COLLA", "cantidad": 2}
+        ]
+      },
+      {
+        "fecha": 2,
+        "local": "INDEPENDIENTE",
+        "visitante": "REFORMERS",
+        "goles_local": 7,
+        "goles_visitante": 0,
+        "goleadores": [
+          {"nombre": "Ceballoz Velazquez, Miguel Angel", "equipo": "INDEPENDIENTE", "cantidad": 1},
+          {"nombre": "Velazquez Oudri, Ignacio Ezequiel", "equipo": "INDEPENDIENTE", "cantidad": 1},
+          {"nombre": "Herrera Moreira, Brandon Maximiliano", "equipo": "INDEPENDIENTE", "cantidad": 1},
+          {"nombre": "Dovat Lagarriga, Gianluca", "equipo": "INDEPENDIENTE", "cantidad": 1},
+          {"nombre": "Velazquez Oudri, Santiago Gabriel", "equipo": "INDEPENDIENTE", "cantidad": 2},
+          {"nombre": "Carro Chevalier, Cristian Brahian", "equipo": "INDEPENDIENTE", "cantidad": 1}
+        ]
+      },
+      {
+        "fecha": 2,
+        "local": "PEÑAROL",
+        "visitante": "EL PARQUE",
+        "goles_local": 1,
+        "goles_visitante": 2,
+        "goleadores": [
+          {"nombre": "Dominguez Ferreira, Facundo", "equipo": "PEÑAROL", "cantidad": 1},
+          {"nombre": "Aquino Fenouil, Gaston Maximiliano", "equipo": "EL PARQUE", "cantidad": 1},
+          {"nombre": "Herrera Monay, Emilio Andres", "equipo": "EL PARQUE", "cantidad": 1}
+        ]
+      },
+      {
+        "fecha": 2,
+        "local": "ROSARIO ATLETICO",
+        "visitante": "ESTUDIANTES EL COLLA",
+        "goles_local": 1,
+        "goles_visitante": 1,
+        "goleadores": [
+          {"nombre": "Calcagno Batista, Marco Yael", "equipo": "ROSARIO ATLETICO", "cantidad": 1},
+          {"nombre": "Burgo Castañose, Brian", "equipo": "ESTUDIANTES EL COLLA", "cantidad": 1}
+        ]
+      },
+      {
+        "fecha": 3,
+        "local": "REFORMERS",
+        "visitante": "EL PARQUE",
+        "goles_local": 0,
+        "goles_visitante": 2,
+        "goleadores": [
+          {"nombre": "Herrera Monay, Emilio Andres", "equipo": "EL PARQUE", "cantidad": 2}
+        ]
+      },
+      {
+        "fecha": 3,
+        "local": "ESTUDIANTES EL COLLA",
+        "visitante": "INDEPENDIENTE",
+        "goles_local": 4,
+        "goles_visitante": 1,
+        "goleadores": [
+          {"nombre": "Solari Casco, Mauricio Martin", "equipo": "ESTUDIANTES EL COLLA", "cantidad": 1},
+          {"nombre": "Otero Bentancour, Brian Ezequiel", "equipo": "ESTUDIANTES EL COLLA", "cantidad": 1},
+          {"nombre": "Burgo Castañose, Brian", "equipo": "ESTUDIANTES EL COLLA", "cantidad": 1},
+          {"nombre": "Montaña Perez, Ernesto Jhoany", "equipo": "ESTUDIANTES EL COLLA", "cantidad": 1},
+          {"nombre": "Diaz D’Amico, Maicol Joel", "equipo": "INDEPENDIENTE", "cantidad": 1}
+        ]
+      },
+      {
+        "fecha": 3,
+        "local": "ROSARIO ATLETICO",
+        "visitante": "PEÑAROL",
+        "goles_local": 4,
+        "goles_visitante": 1,
+        "goleadores": [
+          {"nombre": "Calcagno Batista, Marco Yael", "equipo": "ROSARIO ATLETICO", "cantidad": 1},
+          {"nombre": "Rodriguez Alvarez, Matias", "equipo": "ROSARIO ATLETICO", "cantidad": 2},
+          {"nombre": "Rodriguez Arocena, Axel Nahuel", "equipo": "ROSARIO ATLETICO", "cantidad": 1},
+          {"nombre": "De Leon Brun, Mauro Sebastian", "equipo": "PEÑAROL", "cantidad": 1}
+        ]
+      },
+      {
+        "fecha": 4,
+        "local": "REFORMERS",
+        "visitante": "ESTUDIANTES EL COLLA",
+        "goles_local": 1,
+        "goles_visitante": 4,
+        "goleadores": [
+          {"nombre": "Correa Gonzalez, Facundo Agustin", "equipo": "REFORMERS", "cantidad": 1},
+          {"nombre": "Do Canto Pagalday, Diego Fabian", "equipo": "ESTUDIANTES EL COLLA", "cantidad": 2},
+          {"nombre": "Otero Bentancour, Brian Ezequiel", "equipo": "ESTUDIANTES EL COLLA", "cantidad": 1},
+          {"nombre": "Acuña Alvarez, Marcos Ezequiel", "equipo": "ESTUDIANTES EL COLLA", "cantidad": 1}
+        ]
+      },
+      {
+        "fecha": 4,
+        "local": "INDEPENDIENTE",
+        "visitante": "PEÑAROL",
+        "goles_local": 8,
+        "goles_visitante": 1,
+        "goleadores": [
+          {"nombre": "Dovat Lagarriga, Gianluca", "equipo": "INDEPENDIENTE", "cantidad": 3},
+          {"nombre": "Herrera Moreira, Brandon Maximiliano", "equipo": "INDEPENDIENTE", "cantidad": 2},
+          {"nombre": "Caballero Iglesias, Juan Manuel", "equipo": "INDEPENDIENTE", "cantidad": 1},
+          {"nombre": "Velazquez Oudri, Santiago Gabriel", "equipo": "INDEPENDIENTE", "cantidad": 1},
+          {"nombre": "Diaz Vega, Emiliano Rafael", "equipo": "INDEPENDIENTE", "cantidad": 1},
+          {"nombre": "Dominguez Moreira, Johnatan Eduardo", "equipo": "PEÑAROL", "cantidad": 1}
+        ]
+      },
+      {
+        "fecha": 4,
+        "local": "EL PARQUE",
+        "visitante": "ROSARIO ATLETICO",
+        "goles_local": 2,
+        "goles_visitante": 1,
+        "goleadores": [
+          {"nombre": "Terra Diaz, Maicol Chayanne", "equipo": "EL PARQUE", "cantidad": 1},
+          {"nombre": "Herrera Monay, Emilio Andres", "equipo": "EL PARQUE", "cantidad": 1},
+          {"nombre": "Gardiol Ortiz, Simon", "equipo": "ROSARIO ATLETICO", "cantidad": 1}
+        ]
+      }
+    ],
+    "goleadores": [],
+    "semifinales": [],
+    "final": []
+  }

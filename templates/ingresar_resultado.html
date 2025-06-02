@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Ingresar Resultado{% endblock %}
+{% block content %}
+<h2 class="mb-4">Ingresar Resultado</h2>
+{% if message %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endif %}
+
+<form method="GET" action="{{ url_for('ingresar_resultado') }}">
+    <div class="mb-3">
+        <label for="fecha" class="form-label">Seleccionar Fecha:</label>
+        <select name="fecha" id="fecha" class="form-control" onchange="this.form.submit()">
+            {% for i in range(1, fixture|length + 1) %}
+            <option value="{{ i }}" {% if i == fecha %}selected{% endif %}>Fecha {{ i }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</form>
+
+{% if partidos_disponibles %}
+    <h4 class="mb-3">Partidos de la Fecha {{ fecha }}</h4>
+    <div class="row">
+        {% for partido in partidos_disponibles %}
+        <div class="col-md-6 mb-4">
+            <div class="card border-info">
+                <div class="card-body">
+                    <form method="POST">
+                        <input type="hidden" name="fecha" value="{{ fecha }}">
+                        <input type="hidden" name="local" value="{{ partido.local }}">
+                        <input type="hidden" name="visitante" value="{{ partido.visitante }}">
+                        <div class="mb-2">
+                            <b>
+                                <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(partido.local)) }}" style="height:28px;">
+                                {{ partido.local }}
+                                vs
+                                {{ partido.visitante }}
+                                <img src="{{ url_for('static', filename='images/' ~ escudo_equipo(partido.visitante)) }}" style="height:28px;">
+                            </b>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label>Goles {{ partido.local }}:</label>
+                                <input type="number" name="goles_local" class="form-control" min="0" required>
+                            </div>
+                            <div class="col-6">
+                                <label>Goles {{ partido.visitante }}:</label>
+                                <input type="number" name="goles_visitante" class="form-control" min="0" required>
+                            </div>
+                        </div>
+                        <h6 class="mt-3">Goleadores</h6>
+                        <div class="row">
+                            {% for i in range(1, 6) %}
+                            <div class="col-6 mb-2">
+                                <input type="text" name="goleador_nombre_{{i}}" class="form-control mb-1" placeholder="Nombre Goleador {{i}}">
+                                <select name="goleador_equipo_{{i}}" class="form-control mb-1">
+                                    <option value="">Equipo</option>
+                                    <option value="{{ partido.local }}">{{ partido.local }}</option>
+                                    <option value="{{ partido.visitante }}">{{ partido.visitante }}</option>
+                                </select>
+                                <input type="number" name="goleador_cantidad_{{i}}" class="form-control" placeholder="Goles" min="1">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-info mt-2">Guardar Resultado</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-success">Todos los partidos de la fecha {{ fecha }} ya fueron cargados.</div>
+{% endif %}
+<a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Volver</a>
+{% endblock %}

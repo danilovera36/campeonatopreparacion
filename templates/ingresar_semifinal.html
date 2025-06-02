@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Cargar Semifinales{% endblock %}
+{% block content %}
+<h2 class="mb-4">Cargar Resultados de Semifinales</h2>
+<form method="POST">
+    {% for sf in semifinales %}
+    <div class="mb-4 border p-3">
+        <h5>Semifinal {{ loop.index }}</h5>
+        <div class="row">
+            <div class="col-md-5">
+                <label class="form-label">Local: {{ sf.local }}</label>
+                <input type="number" name="goles_local_{{sf.id}}" class="form-control" placeholder="Goles Local" min="0" required>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Visitante: {{ sf.visitante }}</label>
+                <input type="number" name="goles_visitante_{{sf.id}}" class="form-control" placeholder="Goles Visitante" min="0" required>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-warning">Guardar Semifinales</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Volver</a>
+</form>
+{% endblock %}
